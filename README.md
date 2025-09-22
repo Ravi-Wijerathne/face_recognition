@@ -43,6 +43,11 @@ pip install opencv-contrib-python numpy Pillow
 ```
 
 ### 3. Run the Application
+
+**Option 1: Easy Launch (Recommended)**
+- Double-click `run_face_recognition.bat`
+
+**Option 2: Command Line**
 ```bash
 python face_recognition_opencv.py
 ```
@@ -96,13 +101,14 @@ python face_recognition_opencv.py
 
 ```
 face_recognition/
-├── .gitignore                   # Git ignore file
-├── face_recognition_opencv.py    # Main application file
-├── face_data_opencv.json        # Face metadata (auto-generated)
-├── face_data_opencv.npy         # Face training data (auto-generated)
-├── face_labels_opencv.npy       # Face labels (auto-generated)
-├── LICENSE                      # MIT License file
-└── README.md                    # This file
+├── .gitignore                      # Git ignore file
+├── face_recognition_opencv.py      # Main application file
+├── face_data_opencv.json          # Face metadata (auto-generated)
+├── face_data_opencv.npy           # Face training data (auto-generated)
+├── face_labels_opencv.npy         # Face labels (auto-generated)
+├── LICENSE                        # MIT License file
+├── README.md                      # This file
+└── run_face_recognition.bat       # Easy launcher for Windows
 ```
 
 ## ⚙️ Configuration
@@ -173,6 +179,12 @@ pip install --user opencv-contrib-python numpy Pillow
 
 ### Command Line Options
 ```bash
+# Easy launch (Windows)
+run_face_recognition.bat
+
+# Run with Python command
+python face_recognition_opencv.py
+
 # Run with specific Python version
 python3 face_recognition_opencv.py
 

@@ -42,11 +42,6 @@ cd face_recognition
 pip install opencv-contrib-python numpy Pillow
 ```
 
-**OR** install all at once:
-```bash
-pip install opencv-contrib-python numpy Pillow
-```
-
 ### 3. Run the Application
 ```bash
 python face_recognition_opencv.py

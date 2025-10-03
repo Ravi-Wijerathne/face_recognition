@@ -37,17 +37,28 @@ git clone https://github.com/Ravi-Wijerathne/face_recognition.git
 cd face_recognition
 ```
 
-### 2. Install Required Packages
+### 2. Set Up Virtual Environment (Recommended)
 ```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+```
+
+### 3. Install Required Packages
+```bash
+# Install from requirements file (recommended)
+pip install -r requirements.txt
+
+# OR install manually
 pip install opencv-contrib-python numpy Pillow
 ```
 
-### 3. Run the Application
-
-**Option 1: Easy Launch (Recommended)**
-- Double-click `run_face_recognition.bat`
-
-**Option 2: Command Line**
+### 4. Run the Application
 ```bash
 python face_recognition_opencv.py
 ```
@@ -108,7 +119,7 @@ face_recognition/
 ├── face_labels_opencv.npy         # Face labels (auto-generated)
 ├── LICENSE                        # MIT License file
 ├── README.md                      # This file
-└── run_face_recognition.bat       # Easy launcher for Windows
+└── requirements.txt               # Python package dependencies
 ```
 
 ## ⚙️ Configuration
@@ -157,14 +168,26 @@ python -c "import cv2; import numpy; from PIL import Image; print('All packages 
 
 ### Package Installation Issues
 
+#### Package Installation Issues
+
 #### Windows: "pip is not recognized"
 ```bash
-python -m pip install opencv-contrib-python numpy Pillow
+python -m pip install -r requirements.txt
 ```
 
 #### Permission issues
 ```bash
-pip install --user opencv-contrib-python numpy Pillow
+pip install --user -r requirements.txt
+```
+
+#### Virtual Environment Issues
+```bash
+# If venv activation fails, try:
+python -m venv .venv --clear
+
+# Then activate and install:
+.venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
 ## 🔒 Privacy & Data
@@ -179,9 +202,6 @@ pip install --user opencv-contrib-python numpy Pillow
 
 ### Command Line Options
 ```bash
-# Easy launch (Windows)
-run_face_recognition.bat
-
 # Run with Python command
 python face_recognition_opencv.py
 

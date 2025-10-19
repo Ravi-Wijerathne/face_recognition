@@ -6,12 +6,20 @@ A real-time face recognition application built with OpenCV and Python. This syst
 ![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
 
+## 📸 Screenshots
+
+### Dark Mode Interface
+![Face Recognition System - Dark Mode](https://github.com/user-attachments/assets/6ba16ee9-8d37-46dd-aed4-1bb2aa2014ff)
+
+The application features a modern, clean interface with support for both dark and light themes.
+
 ## 🚀 Features
 
 - **Real-time Face Recognition** - Identify registered faces from webcam feed
 - **Face Registration** - Add new people with multiple training samples
 - **High Accuracy** - Uses OpenCV's LBPH (Local Binary Pattern Histogram) algorithm
-- **User-friendly GUI** - Easy-to-use graphical interface
+- **Modern GUI** - Beautiful, modern interface powered by CustomTkinter
+- **Dark/Light Theme** - Built-in dark and light mode support
 - **Data Persistence** - Saves registered faces between sessions
 - **Confidence Scoring** - Shows recognition accuracy percentage
 - **Face Management** - View, delete, and manage registered faces
@@ -27,7 +35,8 @@ A real-time face recognition application built with OpenCV and Python. This syst
 - `opencv-contrib-python` - Computer vision and face recognition
 - `numpy` - Numerical computing
 - `Pillow` - Image processing
-- `tkinter` - GUI framework (usually included with Python)
+- `customtkinter` - Modern GUI framework with dark/light theme support
+- `tkinter` - GUI framework (usually included with Python, required by CustomTkinter)
 
 ## 🔧 Installation
 
@@ -55,7 +64,19 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # OR install manually
-pip install opencv-contrib-python numpy Pillow
+pip install opencv-contrib-python numpy Pillow customtkinter
+```
+
+**Note for Linux users:** If you encounter a `ModuleNotFoundError: No module named 'tkinter'` error, you need to install the system tkinter package:
+```bash
+# Ubuntu/Debian
+sudo apt-get install python3-tk
+
+# Fedora
+sudo dnf install python3-tkinter
+
+# Arch Linux
+sudo pacman -S tk
 ```
 
 ### 4. Run the Application
@@ -123,6 +144,17 @@ face_recognition/
 ```
 
 ## ⚙️ Configuration
+
+### Theme Customization
+The application uses CustomTkinter which supports dark and light themes. The default theme is set to dark mode, but you can change it by modifying the code:
+
+```python
+# In face_recognition_opencv.py, in the __init__ method:
+ctk.set_appearance_mode("dark")   # Options: "dark", "light", "system"
+ctk.set_default_color_theme("blue")  # Options: "blue", "green", "dark-blue"
+```
+
+The "system" option will automatically match your operating system's theme preference.
 
 ### Recognition Sensitivity
 You can adjust recognition sensitivity by modifying the confidence threshold in the code:
@@ -250,6 +282,7 @@ If you encounter any issues or have questions:
 - **v1.0** - Initial release with OpenCV-based recognition
 - **v1.1** - Fixed data loading issues and improved stability
 - **v1.2** - Enhanced GUI and added better error handling
+- **v2.0** - Migrated from Tkinter to CustomTkinter with modern dark/light theme support
 
 ---
 

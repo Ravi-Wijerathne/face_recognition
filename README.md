@@ -80,8 +80,34 @@ sudo pacman -S tk
 ```
 
 ### 4. Run the Application
+
+**Make sure your virtual environment is activated first:**
 ```bash
+# Windows:
+(.venv) PS> python face_recognition_opencv.py
+
+# macOS/Linux:
+(.venv) $ python face_recognition_opencv.py
+```
+
+**If virtual environment is not activated, activate it first:**
+```bash
+# Windows:
+.venv\Scripts\activate
 python face_recognition_opencv.py
+
+# macOS/Linux:
+source .venv/bin/activate
+python face_recognition_opencv.py
+```
+
+**Alternative (run directly without activation):**
+```bash
+# Windows:
+C:/path/to/your/project/.venv/Scripts/python.exe face_recognition_opencv.py
+
+# macOS/Linux:
+./venv/bin/python face_recognition_opencv.py
 ```
 
 ## 📖 How to Use
@@ -234,11 +260,21 @@ pip install -r requirements.txt
 
 ### Command Line Options
 ```bash
-# Run with Python command
+# Run with virtual environment activated (Recommended)
+(.venv) PS> python face_recognition_opencv.py
+(.venv) $ python face_recognition_opencv.py
+
+# Run with Python command (if venv not activated)
 python face_recognition_opencv.py
 
 # Run with specific Python version
 python3 face_recognition_opencv.py
+
+# Run with full virtual environment path
+# Windows:
+C:/path/to/your/project/.venv/Scripts/python.exe face_recognition_opencv.py
+# macOS/Linux:
+./venv/bin/python face_recognition_opencv.py
 
 # Run with full path (if Python not in PATH)
 "C:/path/to/python.exe" face_recognition_opencv.py

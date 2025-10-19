@@ -14,7 +14,6 @@ A modern face recognition application built with Python, OpenCV, and CustomTkint
 ### 1. Clone Repository
 `
 git clone https://github.com/Ravi-Wijerathne/face_recognition.git
-cd face_recognition
 `
 
 ### 2. Setup Virtual Environment

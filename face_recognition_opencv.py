@@ -6,6 +6,9 @@ import json
 import os
 from PIL import Image, ImageTk
 import threading
+import dlib
+import face_recognition  # For better detection
+import mediapipe as mp  # For real-time performance
 
 class FaceRecognitionApp:
     def __init__(self, root):
@@ -17,8 +20,23 @@ class FaceRecognitionApp:
         ctk.set_appearance_mode("dark")  # Options: "dark", "light", "system"
         ctk.set_default_color_theme("blue")  # Options: "blue", "green", "dark-blue"
         
-        # Initialize OpenCV face detector and recognizer
+        # Detection method: 'haar', 'dlib', 'face_recognition', or 'mediapipe'
+        self.detection_method = 'face_recognition'  # Default to face_recognition for better accuracy
+        
+        # Initialize OpenCV face detector (Haar Cascades - legacy method)
         self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        
+        # Initialize dlib face detector
+        self.dlib_detector = dlib.get_frontal_face_detector()
+        
+        # Initialize MediaPipe Face Detection
+        self.mp_face_detection = mp.solutions.face_detection
+        self.mp_face_detector = self.mp_face_detection.FaceDetection(
+            model_selection=0,  # 0 for short-range detection (within 2 meters)
+            min_detection_confidence=0.5
+        )
+        
+        # Face recognizer
         self.face_recognizer = cv2.face.LBPHFaceRecognizer_create()
         
         # Data storage
@@ -73,6 +91,24 @@ class FaceRecognitionApp:
                                            command=self.toggle_recognition, width=150)
         self.recognize_btn.grid(row=0, column=2, padx=5)
         
+        # Detection method selector
+        method_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+        method_frame.grid(row=2, column=0, columnspan=3, pady=(50, 10))
+        
+        method_label = ctk.CTkLabel(method_frame, text="Detection Method:", 
+                                    font=("Arial", 12))
+        method_label.grid(row=0, column=0, padx=5)
+        
+        self.method_var = ctk.StringVar(value="face_recognition")
+        self.method_selector = ctk.CTkOptionMenu(
+            method_frame,
+            values=["haar", "dlib", "face_recognition", "mediapipe"],
+            variable=self.method_var,
+            command=self.change_detection_method,
+            width=150
+        )
+        self.method_selector.grid(row=0, column=1, padx=5)
+        
         # Face list
         list_frame = ctk.CTkFrame(main_frame)
         list_frame.grid(row=3, column=0, columnspan=3, sticky="nsew", pady=10)
@@ -125,6 +161,12 @@ class FaceRecognitionApp:
             self.start_camera()
         else:
             self.stop_camera()
+    
+    def change_detection_method(self, method):
+        """Change the face detection method"""
+        self.detection_method = method
+        self.status_var.set(f"Detection method changed to: {method}")
+        print(f"Detection method changed to: {method}")
             
     def start_camera(self):
         try:
@@ -180,10 +222,61 @@ class FaceRecognitionApp:
                 
             # Small delay to prevent excessive CPU usage
             self.root.after(30)
+    
+    def detect_faces(self, frame, gray):
+        """Detect faces using the selected method
+        
+        Args:
+            frame: BGR color frame
+            gray: Grayscale version of frame
+            
+        Returns:
+            List of tuples (x, y, w, h) representing face bounding boxes
+        """
+        faces = []
+        
+        if self.detection_method == 'haar':
+            # Haar Cascades (legacy method)
+            faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
+            faces = [(x, y, w, h) for (x, y, w, h) in faces]
+            
+        elif self.detection_method == 'dlib':
+            # dlib HOG-based detector
+            dlib_faces = self.dlib_detector(gray, 1)
+            faces = [(face.left(), face.top(), 
+                     face.right() - face.left(), 
+                     face.bottom() - face.top()) 
+                    for face in dlib_faces]
+            
+        elif self.detection_method == 'face_recognition':
+            # face_recognition library (uses dlib internally but with better defaults)
+            # Convert BGR to RGB for face_recognition
+            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            face_locations = face_recognition.face_locations(rgb_frame, model='hog')
+            # Convert from (top, right, bottom, left) to (x, y, w, h)
+            faces = [(left, top, right - left, bottom - top) 
+                    for (top, right, bottom, left) in face_locations]
+            
+        elif self.detection_method == 'mediapipe':
+            # MediaPipe Face Detection (fast and accurate for real-time)
+            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            results = self.mp_face_detector.process(rgb_frame)
+            
+            if results.detections:
+                h, w, _ = frame.shape
+                for detection in results.detections:
+                    bboxC = detection.location_data.relative_bounding_box
+                    x = int(bboxC.xmin * w)
+                    y = int(bboxC.ymin * h)
+                    width = int(bboxC.width * w)
+                    height = int(bboxC.height * h)
+                    faces.append((x, y, width, height))
+        
+        return faces
             
     def process_recognition(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
+        faces = self.detect_faces(frame, gray)
         
         for (x, y, w, h) in faces:
             face_region = gray[y:y+h, x:x+w]
@@ -272,7 +365,7 @@ class FaceRecognitionApp:
             if ret:
                 frame = cv2.flip(frame, 1)
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
+                faces = self.detect_faces(frame, gray)
                 
                 for (x, y, w, h) in faces:
                     # Extract and resize face
@@ -478,6 +571,9 @@ class FaceRecognitionApp:
             
     def on_closing(self):
         self.stop_camera()
+        # Clean up MediaPipe resources
+        if self.mp_face_detector:
+            self.mp_face_detector.close()
         self.root.destroy()
 
 def main():

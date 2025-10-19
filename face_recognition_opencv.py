@@ -6,9 +6,28 @@ import json
 import os
 from PIL import Image, ImageTk
 import threading
-import dlib
-import face_recognition  # For better detection
-import mediapipe as mp  # For real-time performance
+
+# Optional imports for enhanced face detection
+try:
+    import dlib
+    DLIB_AVAILABLE = True
+except ImportError:
+    DLIB_AVAILABLE = False
+    print("Warning: dlib not installed. Haar and dlib detection methods will not be available.")
+
+try:
+    import face_recognition
+    FACE_RECOGNITION_AVAILABLE = True
+except ImportError:
+    FACE_RECOGNITION_AVAILABLE = False
+    print("Warning: face_recognition not installed. face_recognition detection method will not be available.")
+
+try:
+    import mediapipe as mp
+    MEDIAPIPE_AVAILABLE = True
+except ImportError:
+    MEDIAPIPE_AVAILABLE = False
+    print("Warning: mediapipe not installed. MediaPipe detection method will not be available.")
 
 class FaceRecognitionApp:
     def __init__(self, root):
@@ -20,21 +39,42 @@ class FaceRecognitionApp:
         ctk.set_appearance_mode("dark")  # Options: "dark", "light", "system"
         ctk.set_default_color_theme("blue")  # Options: "blue", "green", "dark-blue"
         
-        # Detection method: 'haar', 'dlib', 'face_recognition', or 'mediapipe'
-        self.detection_method = 'face_recognition'  # Default to face_recognition for better accuracy
+        # Determine available detection methods
+        self.available_methods = ['haar']  # Haar is always available with OpenCV
         
-        # Initialize OpenCV face detector (Haar Cascades - legacy method)
+        if DLIB_AVAILABLE:
+            self.available_methods.append('dlib')
+        
+        if FACE_RECOGNITION_AVAILABLE:
+            self.available_methods.append('face_recognition')
+            
+        if MEDIAPIPE_AVAILABLE:
+            self.available_methods.append('mediapipe')
+        
+        # Set default detection method (prefer face_recognition if available, otherwise haar)
+        if FACE_RECOGNITION_AVAILABLE:
+            self.detection_method = 'face_recognition'
+        else:
+            self.detection_method = 'haar'
+        
+        # Initialize OpenCV face detector (Haar Cascades - always available)
         self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         
-        # Initialize dlib face detector
-        self.dlib_detector = dlib.get_frontal_face_detector()
+        # Initialize dlib face detector if available
+        if DLIB_AVAILABLE:
+            self.dlib_detector = dlib.get_frontal_face_detector()
+        else:
+            self.dlib_detector = None
         
-        # Initialize MediaPipe Face Detection
-        self.mp_face_detection = mp.solutions.face_detection
-        self.mp_face_detector = self.mp_face_detection.FaceDetection(
-            model_selection=0,  # 0 for short-range detection (within 2 meters)
-            min_detection_confidence=0.5
-        )
+        # Initialize MediaPipe Face Detection if available
+        if MEDIAPIPE_AVAILABLE:
+            self.mp_face_detection = mp.solutions.face_detection
+            self.mp_face_detector = self.mp_face_detection.FaceDetection(
+                model_selection=0,  # 0 for short-range detection (within 2 meters)
+                min_detection_confidence=0.5
+            )
+        else:
+            self.mp_face_detector = None
         
         # Face recognizer
         self.face_recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -99,10 +139,10 @@ class FaceRecognitionApp:
                                     font=("Arial", 12))
         method_label.grid(row=0, column=0, padx=5)
         
-        self.method_var = ctk.StringVar(value="face_recognition")
+        self.method_var = ctk.StringVar(value=self.detection_method)
         self.method_selector = ctk.CTkOptionMenu(
             method_frame,
-            values=["haar", "dlib", "face_recognition", "mediapipe"],
+            values=self.available_methods,
             variable=self.method_var,
             command=self.change_detection_method,
             width=150
@@ -236,11 +276,11 @@ class FaceRecognitionApp:
         faces = []
         
         if self.detection_method == 'haar':
-            # Haar Cascades (legacy method)
+            # Haar Cascades (legacy method, always available)
             faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
             faces = [(x, y, w, h) for (x, y, w, h) in faces]
             
-        elif self.detection_method == 'dlib':
+        elif self.detection_method == 'dlib' and DLIB_AVAILABLE:
             # dlib HOG-based detector
             dlib_faces = self.dlib_detector(gray, 1)
             faces = [(face.left(), face.top(), 
@@ -248,7 +288,7 @@ class FaceRecognitionApp:
                      face.bottom() - face.top()) 
                     for face in dlib_faces]
             
-        elif self.detection_method == 'face_recognition':
+        elif self.detection_method == 'face_recognition' and FACE_RECOGNITION_AVAILABLE:
             # face_recognition library (uses dlib internally but with better defaults)
             # Convert BGR to RGB for face_recognition
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -257,7 +297,7 @@ class FaceRecognitionApp:
             faces = [(left, top, right - left, bottom - top) 
                     for (top, right, bottom, left) in face_locations]
             
-        elif self.detection_method == 'mediapipe':
+        elif self.detection_method == 'mediapipe' and MEDIAPIPE_AVAILABLE:
             # MediaPipe Face Detection (fast and accurate for real-time)
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             results = self.mp_face_detector.process(rgb_frame)
@@ -271,6 +311,10 @@ class FaceRecognitionApp:
                     width = int(bboxC.width * w)
                     height = int(bboxC.height * h)
                     faces.append((x, y, width, height))
+        else:
+            # Fallback to Haar if selected method is not available
+            faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
+            faces = [(x, y, w, h) for (x, y, w, h) in faces]
         
         return faces
             

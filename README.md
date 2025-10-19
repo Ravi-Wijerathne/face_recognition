@@ -16,6 +16,11 @@ The application features a modern, clean interface with support for both dark an
 ## 🚀 Features
 
 - **Real-time Face Recognition** - Identify registered faces from webcam feed
+- **Multiple Detection Methods** - Choose between Haar Cascades, dlib, face_recognition library, or MediaPipe
+  - **Haar Cascades** - Fast, lightweight (always available)
+  - **dlib** - High accuracy HOG-based detection
+  - **face_recognition** - Optimized detection with excellent accuracy (recommended)
+  - **MediaPipe** - Real-time performance with GPU acceleration support
 - **Face Registration** - Add new people with multiple training samples
 - **High Accuracy** - Uses OpenCV's LBPH (Local Binary Pattern Histogram) algorithm
 - **Modern GUI** - Beautiful, modern interface powered by CustomTkinter
@@ -37,6 +42,12 @@ The application features a modern, clean interface with support for both dark an
 - `Pillow` - Image processing
 - `customtkinter` - Modern GUI framework with dark/light theme support
 - `tkinter` - GUI framework (usually included with Python, required by CustomTkinter)
+
+### Optional Packages (for Enhanced Detection)
+The application works with Haar Cascades by default, but you can install these packages for better accuracy and performance:
+- `face-recognition` - **Recommended** - Provides better face detection accuracy
+- `mediapipe` - Real-time face detection with excellent performance
+- `dlib` - Advanced face detection (included via face-recognition)
 
 ## 🔧 Installation
 
@@ -66,6 +77,37 @@ pip install -r requirements.txt
 # OR install manually
 pip install opencv-contrib-python numpy Pillow customtkinter
 ```
+
+### 3a. Install Enhanced Detection (Optional but Recommended)
+For better face detection accuracy and performance:
+```bash
+# Install enhanced detection packages
+pip install -r requirements-enhanced.txt
+
+# OR install manually
+pip install face-recognition mediapipe
+```
+
+**Note:** The `face-recognition` package requires CMake and dlib to be compiled. On some systems, you may need to install additional dependencies first:
+
+**Windows:**
+- Install Visual Studio Build Tools or Visual Studio with C++ development tools
+- Or use pre-built wheels: `pip install face-recognition`
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get update
+sudo apt-get install cmake build-essential
+pip install face-recognition mediapipe
+```
+
+**macOS:**
+```bash
+brew install cmake
+pip install face-recognition mediapipe
+```
+
+If you encounter issues installing `face-recognition`, the application will still work with the default Haar Cascades detector.
 
 **Note for Linux users:** If you encounter a `ModuleNotFoundError: No module named 'tkinter'` error, you need to install the system tkinter package:
 ```bash
@@ -118,6 +160,15 @@ C:/path/to/your/project/.venv/Scripts/python.exe face_recognition_opencv.py
 3. Your webcam feed will appear in the camera view area
 4. Click **"Stop Camera"** to turn off the camera
 
+### 🎯 Selecting Detection Method
+1. Use the **"Detection Method"** dropdown to choose your preferred face detection algorithm:
+   - **haar** - Fast and lightweight, always available (default if enhanced packages not installed)
+   - **dlib** - High accuracy, requires dlib package
+   - **face_recognition** - Best balance of speed and accuracy (recommended, requires face-recognition package)
+   - **mediapipe** - Excellent real-time performance (requires mediapipe package)
+2. The dropdown will only show methods that have their required packages installed
+3. Change the method anytime during operation
+
 ### 👤 Adding New Faces
 1. Make sure the camera is running
 2. Click **"Add New Face"** button
@@ -149,6 +200,15 @@ C:/path/to/your/project/.venv/Scripts/python.exe face_recognition_opencv.py
 - **Multiple Angles**: Move slightly during capture to get varied samples
 - **Clear View**: Avoid obstructions like glasses or hats if possible
 - **Distance**: Stay 2-3 feet away from the camera
+- **Detection Method**: Use 'face_recognition' or 'mediapipe' for best accuracy
+
+### Detection Method Comparison
+| Method | Speed | Accuracy | Requirements |
+|--------|-------|----------|--------------|
+| Haar Cascades | ⚡⚡⚡ Fast | ⭐⭐ Moderate | Always available |
+| dlib | ⚡⚡ Moderate | ⭐⭐⭐⭐ High | Requires dlib |
+| face_recognition | ⚡⚡ Moderate | ⭐⭐⭐⭐⭐ Excellent | Requires face-recognition (recommended) |
+| MediaPipe | ⚡⚡⚡ Very Fast | ⭐⭐⭐⭐ High | Requires mediapipe |
 
 ### Registration Best Practices
 - **Multiple Sessions**: Register the same person in different lighting conditions
@@ -166,7 +226,8 @@ face_recognition/
 ├── face_labels_opencv.npy         # Face labels (auto-generated)
 ├── LICENSE                        # MIT License file
 ├── README.md                      # This file
-└── requirements.txt               # Python package dependencies
+├── requirements.txt               # Core Python package dependencies
+└── requirements-enhanced.txt      # Optional enhanced detection packages
 ```
 
 ## ⚙️ Configuration
@@ -217,8 +278,14 @@ target_samples = 20  # Increase for better accuracy
 python -c "import cv2; import numpy; from PIL import Image; print('All packages OK!')"
 ```
 
+#### Detection method not showing in dropdown
+- **Solution**: The required package for that method is not installed
+- Install the package from requirements-enhanced.txt
+- Restart the application to see the new method
+
 #### Poor recognition accuracy
 - **Solutions**:
+  - Try using 'face_recognition' or 'mediapipe' detection method for better accuracy
   - Add more training samples for the person
   - Ensure good lighting during registration
   - Re-register faces in current lighting conditions
@@ -226,7 +293,28 @@ python -c "import cv2; import numpy; from PIL import Image; print('All packages 
 
 ### Package Installation Issues
 
-#### Package Installation Issues
+#### Enhanced Detection Packages
+
+**face-recognition installation fails:**
+```bash
+# Try installing with pre-built wheels
+pip install --upgrade pip
+pip install face-recognition
+
+# If still fails on Windows, you may need Visual Studio Build Tools
+# Or download pre-built dlib wheel for your Python version
+```
+
+**mediapipe installation fails:**
+```bash
+# Update pip and try again
+pip install --upgrade pip setuptools wheel
+pip install mediapipe
+```
+
+**Note:** If enhanced packages fail to install, the application will still work with Haar Cascades detection.
+
+#### Basic Package Installation Issues
 
 #### Windows: "pip is not recognized"
 ```bash
@@ -319,6 +407,7 @@ If you encounter any issues or have questions:
 - **v1.1** - Fixed data loading issues and improved stability
 - **v1.2** - Enhanced GUI and added better error handling
 - **v2.0** - Migrated from Tkinter to CustomTkinter with modern dark/light theme support
+- **v2.1** - Added support for multiple face detection methods (dlib, face_recognition, MediaPipe)
 
 ---
 

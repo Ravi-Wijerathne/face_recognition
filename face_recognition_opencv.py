@@ -133,7 +133,7 @@ class FaceRecognitionApp:
         
         # Detection method selector
         method_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        method_frame.grid(row=2, column=0, columnspan=3, pady=(50, 10))
+        method_frame.grid(row=3, column=0, columnspan=3, pady=10)
         
         method_label = ctk.CTkLabel(method_frame, text="Detection Method:", 
                                     font=("Arial", 12))
@@ -151,7 +151,7 @@ class FaceRecognitionApp:
         
         # Face list
         list_frame = ctk.CTkFrame(main_frame)
-        list_frame.grid(row=3, column=0, columnspan=3, sticky="nsew", pady=10)
+        list_frame.grid(row=4, column=0, columnspan=3, sticky="nsew", pady=10)
         
         list_label = ctk.CTkLabel(list_frame, text="Registered Faces", 
                                   font=("Arial", 14, "bold"))
@@ -178,12 +178,12 @@ class FaceRecognitionApp:
         self.status_var.set("Ready")
         status_bar = ctk.CTkLabel(main_frame, textvariable=self.status_var, 
                                   anchor="w", height=30)
-        status_bar.grid(row=4, column=0, columnspan=3, sticky="ew", pady=(10, 0))
+        status_bar.grid(row=5, column=0, columnspan=3, sticky="ew", pady=(10, 0))
         
         # Configure grid weights
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
-        main_frame.grid_rowconfigure(3, weight=1)
+        main_frame.grid_rowconfigure(4, weight=1)
         main_frame.grid_columnconfigure(1, weight=1)
         list_frame.grid_rowconfigure(1, weight=1)
         list_frame.grid_columnconfigure(0, weight=1)

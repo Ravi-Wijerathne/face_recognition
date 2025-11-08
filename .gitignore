@@ -217,3 +217,5 @@ Temporary Items
 temp_*
 cache_*
 training_*
+
+CHANGES.md

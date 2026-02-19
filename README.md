@@ -78,8 +78,7 @@ python face_recognition_opencv.py
 ## Files
 - `face_recognition_opencv.py` - Main application file
 - `start_app.sh` - Automated setup and launch script (Linux)
-- `requirements.txt` - Base Python dependencies
-- `requirements-enhanced.txt` - Optional enhanced detection libraries
+- `requirements.txt` - Python dependencies
 
 ## Requirements
 - **Python 3.7+**

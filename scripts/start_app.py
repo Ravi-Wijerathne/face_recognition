@@ -18,9 +18,10 @@ from pathlib import Path
 ################################################################################
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-VENV_DIR = SCRIPT_DIR / "venv"
-REQUIREMENTS_FILE = SCRIPT_DIR / "requirements.txt"
-APP_FILE = SCRIPT_DIR / "face_recognition_opencv.py"
+ROOT_DIR = SCRIPT_DIR.parent
+VENV_DIR = ROOT_DIR / ".venv"
+REQUIREMENTS_FILE = ROOT_DIR / "requirements.txt"
+APP_FILE = ROOT_DIR / "face_recognition_opencv.py"
 
 IS_WINDOWS = platform.system() == "Windows"
 IS_LINUX = platform.system() == "Linux"
@@ -91,7 +92,7 @@ def run_venv_command(args, check=True, capture=False):
             check=check,
             capture_output=capture,
             text=True,
-            cwd=str(SCRIPT_DIR),
+            cwd=str(ROOT_DIR),
         )
         return result
     except subprocess.CalledProcessError as e:
@@ -329,7 +330,7 @@ def run_application():
     print_header("Starting Face Recognition Application")
 
     if not APP_FILE.exists():
-        print_error(f"face_recognition_opencv.py not found in {SCRIPT_DIR}")
+        print_error(f"face_recognition_opencv.py not found in {ROOT_DIR}")
         sys.exit(1)
 
     print_info("Launching application...\n")
@@ -339,10 +340,11 @@ def run_application():
         # os.execv doesn't work well on Windows; use subprocess instead
         result = subprocess.run(
             [str(VENV_PYTHON), str(APP_FILE)],
-            cwd=str(SCRIPT_DIR),
+            cwd=str(ROOT_DIR),
         )
         sys.exit(result.returncode)
     else:
+        os.chdir(str(ROOT_DIR))
         os.execv(str(VENV_PYTHON), [str(VENV_PYTHON), str(APP_FILE)])
 
 

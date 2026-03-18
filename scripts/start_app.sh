@@ -16,6 +16,7 @@ NC='\033[0m' # No Color
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
 ################################################################################
 # Functions
@@ -131,7 +132,7 @@ check_system_dependencies() {
 setup_virtual_environment() {
     print_header "Setting Up Python Virtual Environment"
     
-    local venv_dir="$SCRIPT_DIR/venv"
+    local venv_dir="$ROOT_DIR/.venv"
     
     if [ ! -d "$venv_dir" ]; then
         print_info "Creating virtual environment..."
@@ -160,9 +161,9 @@ install_python_dependencies() {
     print_header "Installing Python Dependencies"
     
     # Install base requirements
-    if [ -f "$SCRIPT_DIR/requirements.txt" ]; then
+    if [ -f "$ROOT_DIR/requirements.txt" ]; then
         print_info "Installing base requirements..."
-        pip install -r "$SCRIPT_DIR/requirements.txt"
+        pip install -r "$ROOT_DIR/requirements.txt"
         print_success "Base requirements installed"
     else
         print_warning "requirements.txt not found, installing manually..."
@@ -265,8 +266,8 @@ EOF
 run_application() {
     print_header "Starting Face Recognition Application"
     
-    if [ ! -f "$SCRIPT_DIR/face_recognition_opencv.py" ]; then
-        print_error "face_recognition_opencv.py not found in $SCRIPT_DIR"
+    if [ ! -f "$ROOT_DIR/face_recognition_opencv.py" ]; then
+        print_error "face_recognition_opencv.py not found in $ROOT_DIR"
         exit 1
     fi
     
@@ -274,7 +275,8 @@ run_application() {
     echo ""
     
     # Run the application
-    python3 "$SCRIPT_DIR/face_recognition_opencv.py"
+    cd "$ROOT_DIR" || exit 1
+    python3 "$ROOT_DIR/face_recognition_opencv.py"
 }
 
 ################################################################################

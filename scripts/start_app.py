@@ -158,11 +158,26 @@ def check_system_dependencies():
     # Check Visual C++ Build Tools on Windows (needed for dlib)
     if IS_WINDOWS:
         vs_path = shutil.which("cl")
+        if not vs_path:
+            # Try finding via vswhere
+            vswhere_path = Path(os.environ.get("ProgramFiles(x86)", "C:/Program Files (x86)")) / "Microsoft Visual Studio" / "Installer" / "vswhere.exe"
+            if vswhere_path.exists():
+                try:
+                    result = subprocess.run([
+                        str(vswhere_path), "-latest", "-products", "*",
+                        "-requires", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+                        "-property", "installationPath"
+                    ], capture_output=True, text=True, check=True)
+                    if result.stdout.strip():
+                        vs_path = result.stdout.strip()
+                except Exception:
+                    pass
+
         if vs_path:
-            print_success("Visual C++ compiler found")
+            print_success("Visual C++ Build Tools found")
         else:
             print_warning(
-                "Visual C++ Build Tools not detected in PATH — "
+                "Visual C++ Build Tools not detected in PATH or via vswhere — "
                 "dlib may fail to build"
             )
             print_info(
@@ -225,7 +240,7 @@ def setup_virtual_environment():
     print_info("Upgrading pip, setuptools, wheel...")
     run_venv_command(
         [str(VENV_PYTHON), "-m", "pip", "install", "--upgrade",
-         "pip", "setuptools", "wheel"],
+         "pip", "setuptools<70.0.0", "wheel"],
         check=True,
     )
     print_success("pip upgraded")
@@ -256,6 +271,7 @@ def install_python_dependencies():
     # Enhanced / optional dependencies
     optional_packages = [
         ("dlib", "dlib>=19.24.0", "dlib (this may take several minutes)"),
+        ("face_recognition_models", "face_recognition_models", "face_recognition_models"),
         ("face-recognition", "face-recognition>=1.3.0", "face-recognition"),
         ("mediapipe", "mediapipe>=0.10.0", "mediapipe"),
     ]

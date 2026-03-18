@@ -4,8 +4,5 @@ numpy>=1.21.0
 Pillow>=8.0.0
 customtkinter>=5.0.0
 
-# Enhanced face detection
-# Note: dlib requires CMake and other build tools to be installed first
-dlib>=19.24.0
-face-recognition>=1.3.0
-mediapipe>=0.10.0
+# Enhanced face detection models are installed optionally by start_app.py
+# (dlib, face-recognition, mediapipe)

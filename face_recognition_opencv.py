@@ -24,10 +24,11 @@ except ImportError:
 
 try:
     import mediapipe as mp
+    _ = mp.solutions  # Check if the solutions API is actually available
     MEDIAPIPE_AVAILABLE = True
-except ImportError:
+except (ImportError, AttributeError):
     MEDIAPIPE_AVAILABLE = False
-    print("Warning: mediapipe not installed. MediaPipe detection method will not be available.")
+    print("Warning: mediapipe not fully installed. MediaPipe detection method will not be available.")
 
 class FaceRecognitionApp:
     def __init__(self, root):

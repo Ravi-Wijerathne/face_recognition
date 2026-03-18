@@ -14,21 +14,10 @@ Real-time face detection and recognition using Python, OpenCV, and CustomTkinter
 ```bash
 git clone https://github.com/Ravi-Wijerathne/face_recognition.git
 cd face_recognition
-python start_app.py
+python scripts/start_app.py
 ```
 
 Works on Windows, Linux, and macOS. The script checks and installs all dependencies, sets up a virtual environment, and launches the app.
-
-### Automated (Linux — Shell Script)
-
-```bash
-git clone https://github.com/Ravi-Wijerathne/face_recognition.git
-cd face_recognition
-chmod +x start_app.sh
-./start_app.sh
-```
-
-Same as above but as a Bash script for Linux. First run may take 5-10 minutes.
 
 ### Manual Setup (All Platforms)
 

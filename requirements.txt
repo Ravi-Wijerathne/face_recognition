@@ -6,3 +6,7 @@ customtkinter>=5.0.0
 
 # Enhanced face detection models are installed optionally by start_app.py
 # (dlib, face-recognition, mediapipe)
+
+# Testing dependencies
+pytest>=7.0.0
+pytest-mock>=3.10.0

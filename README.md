@@ -61,6 +61,55 @@ python face_recognition_opencv.py
 3. Click **Recognize Faces** to begin identification
 4. Switch detection methods from the dropdown
 
+## Testing
+
+This project includes comprehensive unit and integration tests using pytest.
+
+### Test Structure
+
+The `tests/` directory contains:
+
+- **test_camera.py** — Integration tests for camera functionality (requires camera hardware)
+- **test_data_management.py** — Unit tests for data management (save, load, export, import)
+- **test_face_detection.py** — Unit tests for face detection methods (Haar Cascades, dlib, face_recognition, MediaPipe)
+- **test_gui.py** — Unit tests for GUI components and user interface
+- **test_recognition.py** — Unit tests for face recognition logic (confidence, labeling, processing)
+- **test_start_script.py** — Unit tests for the start_app.py setup script
+
+### Running Tests
+
+**Run all tests:**
+```bash
+pytest
+```
+
+**Run specific test file:**
+```bash
+pytest tests/test_face_detection.py
+```
+
+**Run tests by marker:**
+```bash
+pytest -m unit          # Run only unit tests
+pytest -m integration   # Run only integration tests
+pytest -m camera        # Run only camera tests (requires hardware)
+```
+
+**Run with verbose output:**
+```bash
+pytest -v
+```
+
+**Run with coverage report:**
+```bash
+pip install pytest-cov
+pytest --cov=. tests/
+```
+
+### Test Configuration
+
+See `pytest.ini` for test configuration including markers, test discovery patterns, and warning filters.
+
 ## License
 
 See [LICENSE](LICENSE) for details.

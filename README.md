@@ -1,6 +1,6 @@
 # Face Recognition System
 
-Real-time face detection and recognition using Python, OpenCV, and CustomTkinter. Supports multiple detection methods: Haar Cascades, dlib, face_recognition, and MediaPipe.
+Real-time face detection and recognition using Python, OpenCV, and CustomTkinter. Supports multiple detection methods: Haar Cascades, dlib, face_recognition, and MediaPipe. Works for Windows and Linux only.
 
 ## Requirements
 
